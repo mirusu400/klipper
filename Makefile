@@ -10,9 +10,9 @@ OUT=out/
 # Kconfig includes
 export KCONFIG_CONFIG     := $(CURDIR)/.config
 -include $(KCONFIG_CONFIG)
-
+CROSS_PREFIX=arm-none-eabi-
 # Common command definitions
-CC=$(CROSS_PREFIX)gcc
+CC=gclang
 AS=$(CROSS_PREFIX)as
 LD=$(CROSS_PREFIX)ld
 OBJCOPY=$(CROSS_PREFIX)objcopy
@@ -20,6 +20,15 @@ OBJDUMP=$(CROSS_PREFIX)objdump
 STRIP=$(CROSS_PREFIX)strip
 CPP=cpp
 PYTHON=python3
+$(info $(CC))
+$(info $(AS))
+$(info $(LD))
+$(info $(OBJCOPY))
+$(info $(OBJDUMP))
+$(info $(STRIP))
+$(info $(CPP))
+$(info $(PYTHON))
+
 
 # Source files
 src-y =
@@ -31,7 +40,8 @@ cc-option=$(shell if test -z "`$(1) $(2) -S -o /dev/null -xc /dev/null 2>&1`" \
 
 CFLAGS := -I$(OUT) -Isrc -I$(OUT)board-generic/ -std=gnu11 -O2 -MD \
     -Wall -Wold-style-definition $(call cc-option,$(CC),-Wtype-limits,) \
-    -ffunction-sections -fdata-sections -fno-delete-null-pointer-checks
+    -ffunction-sections -fdata-sections -fno-delete-null-pointer-checks \
+	-Ilib/ -I/home/sfk6051/avr8-gnu-toolchain-linux_x86_64/avr/include --target=arm-none-eabi
 CFLAGS += -flto=auto -fwhole-program -fno-use-linker-plugin -ggdb3
 
 OBJS_klipper.elf = $(patsubst %.c, $(OUT)src/%.o,$(src-y))
